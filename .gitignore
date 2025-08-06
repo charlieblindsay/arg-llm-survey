@@ -1,0 +1,4 @@
+google_sheets_auth.json
+results/*
+venv/*
+__pycache__/*
