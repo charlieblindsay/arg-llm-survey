@@ -1,4 +1,4 @@
-import app as st
+import streamlit as st
 import random
 import json
 from google_sheets_writer import GoogleSheetsWriter
