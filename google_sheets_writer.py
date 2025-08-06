@@ -1,15 +1,33 @@
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+import streamlit as st
+
+
+def get_credentials():
+    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+    try:
+        # Try loading a local file first
+        creds = service_account.Credentials.from_service_account_file(
+            "google_sheets_auth.json",
+            scopes=scopes
+        )
+        st.info("Loaded credentials from local file.")
+    except (FileNotFoundError, OSError):
+        # Fall back to streamlit secrets
+        svcacct_info = st.secrets["gcp_service_account"]
+        creds = service_account.Credentials.from_service_account_info(
+            svcacct_info,
+            scopes=scopes
+        )
+        st.info("Loaded credentials from Streamlit secrets.")
+    return creds
 
 
 class GoogleSheetsWriter:
     def __init__(self, spreadsheet_id, sheet_name):
         self.credentials_path = 'google_sheets_auth.json'
 
-        scopes = ['https://www.googleapis.com/auth/spreadsheets']
-        credentials = service_account.Credentials.from_service_account_file(
-            self.credentials_path, scopes=scopes
-        )
+        credentials = get_credentials()
 
         self.service = build('sheets', 'v4', credentials=credentials)
         self.sheet_name = sheet_name
