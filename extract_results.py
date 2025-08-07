@@ -12,7 +12,7 @@ examples_for_checking_correctness_of_attacking_arguments_generated = []
 examples_for_checking_correct_weighing_of_arguments = []
 
 for example in data["data"][semantics]:
-    valid = example["valid"]
+    valid = example["valid"] == 1
 
     arguments = example[claim_strength_calculation_type]['bag']['arguments']
     claim_dict = arguments['db0']
