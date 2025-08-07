@@ -11,7 +11,6 @@ def get_credentials():
             "google_sheets_auth.json",
             scopes=scopes
         )
-        st.info("Loaded credentials from local file.")
     except (FileNotFoundError, OSError):
         # Fall back to streamlit secrets
         svcacct_info = st.secrets["gcp_service_account"]
@@ -19,7 +18,6 @@ def get_credentials():
             svcacct_info,
             scopes=scopes
         )
-        st.info("Loaded credentials from Streamlit secrets.")
     return creds
 
 
