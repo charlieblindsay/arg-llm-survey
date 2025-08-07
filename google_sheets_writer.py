@@ -24,17 +24,16 @@ def get_credentials():
 
 
 class GoogleSheetsWriter:
-    def __init__(self, spreadsheet_id, sheet_name):
+    def __init__(self, spreadsheet_id):
         self.credentials_path = 'google_sheets_auth.json'
 
         credentials = get_credentials()
 
         self.service = build('sheets', 'v4', credentials=credentials)
-        self.sheet_name = sheet_name
         self.spreadsheet_id = spreadsheet_id
 
-    def write_to_sheets(self, new_line_data):
-        sheet_range = f"{self.sheet_name}!A:A"
+    def write_to_sheets(self, new_line_data, sheet_name):
+        sheet_range = f"{sheet_name}!A:A"
 
         values = [new_line_data]
 
