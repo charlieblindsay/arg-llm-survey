@@ -110,10 +110,15 @@ with st.form("evaluation_form"):
 
         The first 2 questions focus on assessing the quality of the supporting and attacking argument respectively.
         The third question focusses on assessing the relative strength of an attacking argument in
-        comparison with a supporting argument. All 3 questions include the claim and arguments produced."""
+        comparison with a supporting argument. All 3 questions include the claim and arguments produced.
+
+        Your responses will be very helpful as they will provide a qualitative assessment of the arguments
+        produced by the LLM and the means by which the relative strength of arguments is assessed."""
              )
 
     st.divider()
+
+    name = st.text_input("What is your name?")
 
     st.title("Argument Validity Questions")
 
