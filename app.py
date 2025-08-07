@@ -30,7 +30,7 @@ def render_argument_section(example, argument_type, likert_options):
     st.header(f"{display_type} Argument Question")
     st.subheader("Claim")
     st.text(example["claim"])
-    st.subheader(f"{display_type} Argument")
+    st.subheader(f"Argument {display_type} Claim")
     st.text(example["argument"])
 
     # Collect responses
@@ -38,7 +38,7 @@ def render_argument_section(example, argument_type, likert_options):
 
     # Correctness evaluation
     responses['correct'] = st.radio(
-        f"Do you think the {key_prefix} argument is correct?",
+        f"Given the claim provided above, do you agree that the argument {key_prefix} this claim is correct?",
         options=likert_options,
         key=f"{key_prefix}_correct"
     )
@@ -146,8 +146,9 @@ with st.form("evaluation_form"):
     st.text(weighing_example["supporting_argument"])
 
     which_argument = st.radio(
-        """Out of the above attacking and supporting arguments, which is
-        stronger? Or are they equally strong?""",
+    """Considering the claim above, please compare the two LLM-generated
+    arguments (attacking vs. supporting).
+    Which argument do you find stronger, or are they equally strong?""",
         ["Attacking Argument", "Supporting Argument", "Equally strong"],
         key="weighing_choice"
     )
