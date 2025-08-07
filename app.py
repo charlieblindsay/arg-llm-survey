@@ -46,7 +46,7 @@ def render_argument_section(example, argument_type, likert_options):
     # Optional explanation for incorrect arguments
     if responses['correct'] in ['Strongly Disagree', 'Disagree']:
         responses['explanation'] = st.text_area(
-            f"Why do you think the {key_prefix} argument is incorrect?",
+            f"If you answered 'Disagree' or 'Strongly Disagree', why do you think the {key_prefix} argument is incorrect?",
             key=f"{key_prefix}_explanation"
         )
 
@@ -152,28 +152,20 @@ with st.form("evaluation_form"):
         key="weighing_choice"
     )
 
-    other_argument = 'Attacking Argument' if which_argument == 'Supporting Argument' else 'Supporting Argument'
+    difference_in_strengths = st.radio(
+        f"""How much stronger is this argument than the other?""",
+        options=['Not stronger', 'Slightly stronger', 'Moderately stronger',
+                 'Much stronger', 'Extremely stronger'],
+        key="difference_in_strengths"
+    )
 
-    if which_argument == "Attacking Argument" or which_argument == "Supporting Argument":
-        difference_in_strengths = st.radio(
-            f"""How much stronger is the {which_argument} as compared with the {other_argument}?""",
-            options=['Barely stronger', 'Slightly stronger', 'Moderately stronger',
-                     'Much stronger', 'Extremely stronger'],
-            key="difference_in_strengths"
-        )
-
-        weighing_explanation = st.text_area(
-            f"""Why do you the {which_argument} is stronger than the {other_argument}?
-            Possible reasons could be that the {which_argument} better makes use of
-            information from the claim, or that all required premises are stated and
-            referenced in the claim etc.""",
-            key="weighing_explanation"
-        )
-    else:
-        weighing_explanation = st.text_area(
-            "Why do you think the arguments have equal strength?",
-            key="weighing_explanation"
-        )
+    weighing_explanation = st.text_area(
+        f"""Why do you think this argument is stronger than the other?
+        Possible reasons could be that the stronger argument makes better use of
+        information from the claim, or that all required premises are stated and
+        referenced in the claim etc.""",
+        key="weighing_explanation"
+    )
 
     submitted = st.form_submit_button("Submit your responses")
 
