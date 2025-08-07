@@ -87,7 +87,7 @@ weighing_example = random.choice(weighing_examples)
 with st.form("evaluation_form"):
     st.write(
         """
-        Thank you for participating in this survey!
+        Thank you for taking the time to participate in this survey!
 
         This survey is part of an MSc individual project applying argumentation frameworks to Task 4 of the COLIEE competition.
         Task 4 involves using relevant statute articles to determine whether a specific legal conclusion is true or false.
@@ -112,7 +112,10 @@ with st.form("evaluation_form"):
         The third question focusses on assessing the relative strength of an attacking argument in
         comparison with a supporting argument. All 3 questions include the claim and arguments produced."""
              )
-    st.title("Argument Validity Evaluation")
+
+    st.divider()
+
+    st.title("Argument Validity Questions")
 
     likert_options = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree']
 
@@ -172,10 +175,10 @@ with st.form("evaluation_form"):
             key="weighing_explanation"
         )
 
-    submitted = st.form_submit_button("Submit")
+    submitted = st.form_submit_button("Submit your responses")
 
 if submitted:
-    st.success("Thanks! Your answers have been recorded.")
+    st.success("Thanks! Your answers have been recorded. Your time is greatly appreciated!")
 
     google_sheets_writer.write_to_sheets(
         sheet_name="SupArg Eval",
