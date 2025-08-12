@@ -101,7 +101,7 @@ weighing_example = random.choice(weighing_examples)
 
 with st.form("evaluation_form"):
     st.write("""
-        Thank you for taking the time to participate in this survey!
+        Thank you for taking the time to participate in this questionnaire!
     """)
 
     st.title("Personal Questions")
@@ -116,6 +116,8 @@ with st.form("evaluation_form"):
     )
 
     st.divider()
+
+    st.title("Questionnaire Description")
 
     st.write(
         """
@@ -220,6 +222,9 @@ if submitted:
     google_sheets_writer.write_to_sheets(
         sheet_name="SupArg Eval",
         new_line_data=[
+            name,
+            job_title,
+            studying,
             supporting_argument_responses["correct"],
             supporting_argument_responses["explanation"] if supporting_argument_responses["explanation"] == "False" else "",
             supporting_argument_responses["uses_specific_claim_information"],
@@ -238,6 +243,9 @@ if submitted:
     google_sheets_writer.write_to_sheets(
         sheet_name="AttArg Eval",
         new_line_data=[
+            name,
+            job_title,
+            studying,
             attacking_argument_responses["correct"],
             attacking_argument_responses["explanation"] if attacking_argument_responses["explanation"] == "False" else "",
             attacking_argument_responses["uses_specific_claim_information"],
@@ -256,6 +264,9 @@ if submitted:
     google_sheets_writer.write_to_sheets(
         sheet_name="Arg Weigh Eval",
         new_line_data=[
+            name,
+            job_title,
+            studying,
             which_argument,
             difference_in_strengths,
             weighing_explanation,
