@@ -2,6 +2,7 @@ import streamlit as st
 import random
 import json
 from google_sheets_writer import GoogleSheetsWriter
+import html
 
 google_sheets_writer = GoogleSheetsWriter(
     spreadsheet_id="1x2yeFBQVQw8_mO6trYiT2qL3gNNXrfhFvJeshi6_Hzs"
@@ -28,10 +29,24 @@ def render_argument_section(example, argument_type, likert_options):
 
     # Header section
     st.header(f"{display_type} Argument Question")
-    st.subheader("Claim")
-    st.text(example["claim"])
-    st.subheader(f"Argument {display_type} Claim")
-    st.text(example["argument"])
+
+    # Red claim subheader and text
+    st.markdown('<p style="color: orange; font-size: 20px; font-weight: bold;">Claim</p>', unsafe_allow_html=True)
+    claim_html = html.escape(example["claim"]).replace('\n', '<br>')
+    st.markdown(f'<p style="color: orange;">{claim_html}</p>', unsafe_allow_html=True)
+
+    # Set argument color based on type
+    if display_type.lower() == "supporting":
+        argument_color = "green"
+    elif display_type.lower() == "attacking":
+        argument_color = "red"
+    else:
+        argument_color = "orange"  # fallback color
+
+    # Argument subheader and text with conditional color
+    st.markdown(f'<p style="color: {argument_color}; font-size: 20px; font-weight: bold;">Argument {display_type} Claim</p>', unsafe_allow_html=True)
+    argument_html = html.escape(example["argument"]).replace('\n', '<br>')
+    st.markdown(f'<p style="color: {argument_color};">{argument_html}</p>', unsafe_allow_html=True)
 
     # Collect responses
     responses = {}
@@ -85,12 +100,27 @@ attacking_example = random.choice(attacking_arguments)
 weighing_example = random.choice(weighing_examples)
 
 with st.form("evaluation_form"):
+    st.write("""
+        Thank you for taking the time to participate in this survey!
+    """)
+
+    st.title("Personal Questions")
+
+    name = st.text_input("What is your name?")
+
+    job_title = st.text_input("What is your current job title?")
+
+    studying = st.text_input(
+        """If you answered 'Student' in the previous question,
+        what are you studying?"""
+    )
+
+    st.divider()
+
     st.write(
         """
-        Thank you for taking the time to participate in this survey!
-
-        This survey is part of an MSc individual project applying argumentation frameworks to Task 4 of the COLIEE competition.
-        Task 4 involves using relevant statute articles to determine whether a specific legal conclusion is true or false.
+        This questionnaire is part of an MSc individual project applying argumentation frameworks to Task 4 of the [COLIEE competition](https://coliee.org/overview).
+        Task 4 involves using relevant statute articles to determine whether a specific legal conclusion (taken from the Japanese Bar exam) is true or false.
 
         In this project, we frame the task as a **claim verification problem**. For each example:
 
@@ -113,12 +143,13 @@ with st.form("evaluation_form"):
         comparison with a supporting argument. All 3 questions include the claim and arguments produced.
 
         Your responses will be very helpful as they will provide a qualitative assessment of the arguments
-        produced by the LLM and the means by which the relative strength of arguments is assessed."""
+        produced by the LLM and the means by which the relative strength of arguments are assessed.
+        """
              )
 
-    st.divider()
+        # TODO: Decide whether to give option to refresh if question is too hard 
 
-    name = st.text_input("What is your name?")
+    st.divider()
 
     st.title("Argument Validity Questions")
 
@@ -142,17 +173,25 @@ with st.form("evaluation_form"):
 
     # Weighing Section
     st.header("Argument Weighing Question")
-    st.subheader("Claim")
-    st.text(weighing_example["claim"])
 
-    st.subheader("Attacking Argument")
-    st.text(weighing_example["attacking_argument"])
-    st.subheader("Supporting Argument")
-    st.text(weighing_example["supporting_argument"])
+    # Orange claim subheader and text
+    st.markdown('<p style="color: orange; font-size: 20px; font-weight: bold;">Claim</p>', unsafe_allow_html=True)
+    claim_html = html.escape(weighing_example["claim"]).replace('\n', '<br>')
+    st.markdown(f'<p style="color: orange;">{claim_html}</p>', unsafe_allow_html=True)
+
+    # Red attacking argument subheader and text
+    st.markdown('<p style="color: red; font-size: 20px; font-weight: bold;">Attacking Argument</p>', unsafe_allow_html=True)
+    attacking_html = html.escape(weighing_example["attacking_argument"]).replace('\n', '<br>')
+    st.markdown(f'<p style="color: red;">{attacking_html}</p>', unsafe_allow_html=True)
+
+    # Green supporting argument subheader and text
+    st.markdown('<p style="color: green; font-size: 20px; font-weight: bold;">Supporting Argument</p>', unsafe_allow_html=True)
+    supporting_html = html.escape(weighing_example["supporting_argument"]).replace('\n', '<br>')
+    st.markdown(f'<p style="color: green;">{supporting_html}</p>', unsafe_allow_html=True)
+
 
     which_argument = st.radio(
-    """Considering the claim above, please compare the two LLM-generated
-    arguments (attacking vs. supporting).
+    """Considering the claim above, please compare the attacking and supporting arguments.
     Which argument do you find stronger, or are they equally strong?""",
         ["Attacking Argument", "Supporting Argument", "Equally strong"],
         key="weighing_choice"
