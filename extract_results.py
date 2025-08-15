@@ -4,6 +4,7 @@ semantics = "dfquad"
 threshold = 0.8
 claim_strength_calculation_type = "estimated"
 job_id = 1384111
+date = '12-08-2025'
 file_path = f"results/{job_id}.json"
 
 with open(file_path, "r", encoding="utf-8") as f:
@@ -85,5 +86,5 @@ with open(f"supporting_arguments_examples__{job_id}.json", 'w') as f:
 with open(f"attacking_arguments_examples__{job_id}.json", 'w') as f:
     json.dump(attacking_arguments_examples, f)
 
-with open(f"weighing_examples__{job_id}.json", 'w') as f:
+with open(f"weighing_examples__{job_id}__{date}.json", 'w') as f:
     json.dump(weighing_examples, f)

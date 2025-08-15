@@ -102,14 +102,15 @@ if "rerun" not in st.session_state:
     st.session_state.rerun = 0
 
 job_id = 1384111
+date = '12-08-2025'
 
-with open(f"examples/attacking_arguments_examples__{job_id}.json", "r") as f:
+with open(f"examples/attacking_arguments_examples__{job_id}__{date}.json", "r") as f:
     attacking_arguments = json.load(f)
 
-with open(f"examples/supporting_arguments_examples__{job_id}.json", "r") as f:
+with open(f"examples/supporting_arguments_examples__{job_id}__{date}.json", "r") as f:
     supporting_arguments = json.load(f)
 
-with open(f"examples/weighing_examples__{job_id}.json", "r") as f:
+with open(f"examples/weighing_examples__{job_id}__{date}.json", "r") as f:
     weighing_examples = json.load(f)
 
 # pick one of each type up front so the form doesn't reshuffle on each widget-change
@@ -291,6 +292,7 @@ with st.form("evaluation_form"):
         google_sheets_writer.write_to_sheets(
             sheet_name="SupArg Eval",
             new_line_data=[
+                date,
                 job_id,
                 st.session_state.personal_info["name"],
                 st.session_state.personal_info["job_title"],
@@ -304,7 +306,6 @@ with st.form("evaluation_form"):
                 supporting_argument_responses.get("irrelevant_premises_details", ""),
                 supporting_argument_responses["complete_premises"],
                 supporting_argument_responses["uses_specific_claim_information"],
-                supporting_argument_responses.get("uses_relevant_claim_information", ""),
                 supporting_example["claim"],
                 supporting_example["valid"],
                 supporting_example["claim_initial_weight"],
@@ -319,6 +320,7 @@ with st.form("evaluation_form"):
         google_sheets_writer.write_to_sheets(
             sheet_name="AttArg Eval",
             new_line_data=[
+                date,
                 job_id,
                 st.session_state.personal_info["name"],
                 st.session_state.personal_info["job_title"],
@@ -332,7 +334,6 @@ with st.form("evaluation_form"):
                 attacking_argument_responses.get("irrelevant_premises_details", ""),
                 attacking_argument_responses["complete_premises"],
                 attacking_argument_responses["uses_specific_claim_information"],
-                attacking_argument_responses.get("uses_relevant_claim_information", ""),
                 attacking_example["claim"],
                 attacking_example["valid"],
                 attacking_example["claim_initial_weight"],
@@ -347,6 +348,7 @@ with st.form("evaluation_form"):
         google_sheets_writer.write_to_sheets(
             sheet_name="Arg Weigh Eval",
             new_line_data=[
+                date,
                 job_id,
                 st.session_state.personal_info["name"],
                 st.session_state.personal_info["job_title"],
