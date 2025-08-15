@@ -3,13 +3,15 @@ import json
 semantics = "dfquad"
 threshold = 0.8
 claim_strength_calculation_type = "estimated"
+job_id = 1384111
+file_path = f"results/{job_id}.json"
 
-with open("results/full_results__1384111__dev.json", "r", encoding="utf-8") as f:
+with open(file_path, "r", encoding="utf-8") as f:
     data = json.load(f)
 
-examples_for_checking_correctness_of_supporting_arguments_generated = []
-examples_for_checking_correctness_of_attacking_arguments_generated = []
-examples_for_checking_correct_weighing_of_arguments = []
+supporting_arguments_examples = []
+attacking_arguments_examples = []
+weighing_examples = []
 
 for example in data["data"][semantics]:
     valid = example["valid"] == 1
@@ -27,7 +29,7 @@ for example in data["data"][semantics]:
             argument_text = argument_dict["argument"]
             argument_strength = argument_dict["strength"]
 
-            examples_for_checking_correctness_of_supporting_arguments_generated.append(
+            supporting_arguments_examples.append(
                 {
                     'claim': claim,
                     'argument': argument_text,
@@ -45,7 +47,7 @@ for example in data["data"][semantics]:
             argument_text = argument_dict["argument"]
             argument_strength = argument_dict["strength"]
 
-            examples_for_checking_correctness_of_attacking_arguments_generated.append(
+            attacking_arguments_examples.append(
                 {
                     'claim': claim,
                     'argument': argument_text,
@@ -59,7 +61,7 @@ for example in data["data"][semantics]:
                 }
             )
 
-        examples_for_checking_correct_weighing_of_arguments.append(
+        weighing_examples.append(
             {
                 'claim': claim,
                 'supporting_argument': arguments['Sdb0<-d1b1']["argument"],
@@ -77,11 +79,11 @@ for example in data["data"][semantics]:
             }
         )
 
-with open("examples_for_checking_correctness_of_supporting_arguments_generated.json", 'w') as f:
-    json.dump(examples_for_checking_correctness_of_supporting_arguments_generated, f)
+with open(f"supporting_arguments_examples__{job_id}.json", 'w') as f:
+    json.dump(supporting_arguments_examples, f)
 
-with open("examples_for_checking_correctness_of_attacking_arguments_generated.json", 'w') as f:
-    json.dump(examples_for_checking_correctness_of_attacking_arguments_generated, f)
+with open(f"attacking_arguments_examples__{job_id}.json", 'w') as f:
+    json.dump(attacking_arguments_examples, f)
 
-with open("examples_for_checking_correct_weighing_of_arguments.json", 'w') as f:
-    json.dump(examples_for_checking_correct_weighing_of_arguments, f)
+with open(f"weighing_examples__{job_id}.json", 'w') as f:
+    json.dump(weighing_examples, f)
