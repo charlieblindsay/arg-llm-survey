@@ -36,15 +36,15 @@ def render_argument_section(example, argument_type, likert_options):
     responses = {}
 
     responses['correct_dialectical_relation'] = st.radio(
-        f"""Do the premises in '{name_of_argument}' intend to {verb} the claim
+        f"""Do the premises in the '{name_of_argument}' intend to {verb} the claim
         rather than {opposite_verb} it?
-        For now, ignore whether or not the argument is sound.""",
+        For now, ignore whether or not the '{name_of_argument}' is sound.""",
         options=['Yes', 'No'],
         key=f"{key_prefix}_correct_dialectical_relation"
     )
 
     responses['logically_valid'] = st.radio(
-        f"Are any of the premises in '{name_of_argument}' logically invalid?",
+        f"Are any of the premises in the '{name_of_argument}' logically invalid?",
         options=['Yes', 'No'],
         key=f"{key_prefix}_logically_valid"
     )
@@ -56,7 +56,7 @@ def render_argument_section(example, argument_type, likert_options):
     )
 
     responses['facts_within_claim'] = st.radio(
-        f"""Do all premises in '{name_of_argument}' use facts only from the
+        f"""Do all premises in the '{name_of_argument}' use facts only from the
         claim?""",
         options=['Yes', 'No'],
         key=f"{key_prefix}_facts_within_claim"
@@ -68,7 +68,7 @@ def render_argument_section(example, argument_type, likert_options):
     )
 
     responses['relevant_premises'] = st.radio(
-        f"""Are all premises in '{name_of_argument}' relevant to the
+        f"""Are all premises in the '{name_of_argument}' relevant to the
         conclusion in the claim?""",
         options=['Yes', 'No'],
         key=f"{key_prefix}_relevant_premises"
@@ -80,8 +80,8 @@ def render_argument_section(example, argument_type, likert_options):
     )
 
     responses['complete_premises'] = st.radio(
-        f"""Does '{name_of_argument}' include all premises needed to reach its
-        conclusion?""",
+        f"""Does '{name_of_argument}' include all premises needed to be
+        a sound argument?""",
         options=['Yes', 'No'],
         key=f"{key_prefix}_complete_premises"
     )
@@ -166,7 +166,7 @@ with st.form("evaluation_form"):
         arguments.
 
         The first 2 questions focus on assessing the quality of the supporting
-        and attacking argument respectively.
+        and attacking arguments respectively.
         The third question focusses on assessing the relative strength of an
         attacking argument in comparison with a supporting argument. All 3
         questions include the claim and arguments produced.
@@ -246,14 +246,14 @@ with st.form("evaluation_form"):
     )
 
     supporting_argument_supports = st.radio(
-        """Do the premises in 'Argument Supporting Claim' intend to support the claim?
+        """Do the premises in the 'Argument Supporting Claim' intend to support the claim?
         For now, ignore whether or not the argument is sound.""",
         options=['Yes', 'No'],
         key="weighing_supporting_argument_supports"
     )
 
     attacking_argument_attacks = st.radio(
-        """Do the premises in 'Argument Attacking Claim' intend to attack the claim?
+        """Do the premises in the 'Argument Attacking Claim' intend to attack the claim?
         For now, ignore whether or not the argument is sound.""",
         options=['Yes', 'No'],
         key="weighing_attacking_argument_attacks"
