@@ -1,90 +1,104 @@
 import json
+import os
+import glob
 
-semantics = "dfquad"
-threshold = 0.8
-claim_strength_calculation_type = "estimated"
-job_id = 1384111
-date = '12-08-2025'
-file_path = f"results/{job_id}.json"
+results_folder = "results"
 
-with open(file_path, "r", encoding="utf-8") as f:
-    data = json.load(f)
+experiment_dict = {
+    "qwen_14b": ["1406146", "1411483"],
+    "qwen_72b": ["196588", "196589"]
+}
 
-supporting_arguments_examples = []
-attacking_arguments_examples = []
-weighing_examples = []
+for model_name, experiment_ids in experiment_dict.items():
+    for experiment_id in experiment_ids:
+        json_file_path = glob.glob(os.path.join(results_folder, model_name, f"{experiment_id}.json"))
 
-for example in data["data"][semantics]:
-    valid = example["valid"] == 1
+        with open(json_file_path[0], "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-    arguments = example[claim_strength_calculation_type]['bag']['arguments']
-    claim_dict = arguments['db0']
-    claim = claim_dict["argument"]
-    claim_initial_weight = claim_dict["initial_weight"]
-    claim_strength = claim_dict["strength"]
-    predicted_label = claim_strength > threshold
+        semantics = data.get('arguments', {}).get('semantics')
+        claim_strength_method = data.get('arguments', {}).get('claim_strength_calc_method')
+        threshold = data.get('arguments', {}).get('threshold')
 
-    if len(claim) < 1000:
-        if example[claim_strength_calculation_type]['prediction'] > threshold:
-            argument_dict = arguments['Sdb0<-d1b1']
-            argument_text = argument_dict["argument"]
-            argument_strength = argument_dict["strength"]
+        supporting_arguments_examples = []
+        attacking_arguments_examples = []
+        weighing_examples = []
 
-            supporting_arguments_examples.append(
-                {
-                    'claim': claim,
-                    'argument': argument_text,
-                    'argument_supports_claim': True,
-                    'claim_strength': claim_strength,
-                    'claim_initial_weight': claim_initial_weight,
-                    'argument_strength': argument_strength,
-                    'threshold': threshold,
-                    'valid': valid,
-                    'correct_prediction': predicted_label == valid
-                }
-            )
-        else:
-            argument_dict = arguments['Adb0<-d1b1']
-            argument_text = argument_dict["argument"]
-            argument_strength = argument_dict["strength"]
+        for example in data["data"][semantics]:
+            valid = example["valid"] == 1
 
-            attacking_arguments_examples.append(
-                {
-                    'claim': claim,
-                    'argument': argument_text,
-                    'argument_supports_claim': False,
-                    'claim_strength': claim_strength,
-                    'claim_initial_weight': claim_initial_weight,
-                    'argument_strength': argument_strength,
-                    'threshold': threshold,
-                    'valid': valid,
-                    'correct_prediction': predicted_label == valid
-                }
-            )
+            arguments = example[claim_strength_method]['bag']['arguments']
+            claim_dict = arguments['db0']
+            claim = claim_dict["argument"]
+            claim_initial_weight = claim_dict["initial_weight"]
+            claim_strength = claim_dict["strength"]
+            predicted_label = claim_strength > threshold
 
-        weighing_examples.append(
-            {
-                'claim': claim,
-                'supporting_argument': arguments['Sdb0<-d1b1']["argument"],
-                'attacking_argument': arguments['Adb0<-d1b1']["argument"],
-                'supporting_strength': arguments["Sdb0<-d1b1"]["strength"],
-                'attacking_strength': arguments["Adb0<-d1b1"]["strength"],
-                'support_is_stronger_than_attack': arguments["Sdb0<-d1b1"]["strength"] > arguments["Adb0<-d1b1"]["strength"],
-                'support_is_equal_to_attack': arguments["Sdb0<-d1b1"]["strength"] == arguments["Adb0<-d1b1"]["strength"],
-                'claim_initial_weight': claim_initial_weight,
-                'claim_strength': claim_strength,
-                'threshold': threshold,
-                'valid': valid,
-                'correct_prediction': predicted_label == valid,
-                'difference_in_strength': arguments["Sdb0<-d1b1"]["strength"] - arguments["Adb0<-d1b1"]["strength"]
-            }
-        )
+            if len(claim) < 1000:
+                if valid:
+                    argument_dict = arguments['Sdb0<-d1b1']
+                    argument_text = argument_dict["argument"]
+                    argument_strength = argument_dict["strength"]
 
-with open(f"supporting_arguments_examples__{job_id}.json", 'w') as f:
-    json.dump(supporting_arguments_examples, f)
+                    supporting_arguments_examples.append(
+                        {
+                            'claim': claim,
+                            'argument': argument_text,
+                            'argument_supports_claim': True,
+                            'claim_strength': claim_strength,
+                            'claim_initial_weight': claim_initial_weight,
+                            'argument_strength': argument_strength,
+                            'threshold': threshold,
+                            'valid': valid,
+                            'correct_prediction': predicted_label == valid
+                        }
+                    )
+                else:
+                    argument_dict = arguments['Adb0<-d1b1']
+                    argument_text = argument_dict["argument"]
+                    argument_strength = argument_dict["strength"]
 
-with open(f"attacking_arguments_examples__{job_id}.json", 'w') as f:
-    json.dump(attacking_arguments_examples, f)
+                    attacking_arguments_examples.append(
+                        {
+                            'claim': claim,
+                            'argument': argument_text,
+                            'argument_supports_claim': False,
+                            'claim_strength': claim_strength,
+                            'claim_initial_weight': claim_initial_weight,
+                            'argument_strength': argument_strength,
+                            'threshold': threshold,
+                            'valid': valid,
+                            'correct_prediction': predicted_label == valid
+                        }
+                    )
 
-with open(f"weighing_examples__{job_id}__{date}.json", 'w') as f:
-    json.dump(weighing_examples, f)
+                weighing_examples.append(
+                    {
+                        'claim': claim,
+                        'supporting_argument': arguments['Sdb0<-d1b1']["argument"],
+                        'attacking_argument': arguments['Adb0<-d1b1']["argument"],
+                        'supporting_strength': arguments["Sdb0<-d1b1"]["strength"],
+                        'attacking_strength': arguments["Adb0<-d1b1"]["strength"],
+                        'support_is_stronger_than_attack': arguments["Sdb0<-d1b1"]["strength"] > arguments["Adb0<-d1b1"]["strength"],
+                        'support_is_equal_to_attack': arguments["Sdb0<-d1b1"]["strength"] == arguments["Adb0<-d1b1"]["strength"],
+                        'claim_initial_weight': claim_initial_weight,
+                        'claim_strength': claim_strength,
+                        'threshold': threshold,
+                        'valid': valid,
+                        'correct_prediction': predicted_label == valid,
+                        'difference_in_strength': arguments["Sdb0<-d1b1"]["strength"] - arguments["Adb0<-d1b1"]["strength"]
+                    }
+                )
+
+        folder_name = f"examples/{model_name}/{experiment_id}"
+
+        os.makedirs(folder_name, exist_ok=True)
+
+        with open(f"{folder_name}/supporting_arguments_examples.json", 'w') as f:
+            json.dump(supporting_arguments_examples, f)
+
+        with open(f"{folder_name}/attacking_arguments_examples.json", 'w') as f:
+            json.dump(attacking_arguments_examples, f)
+
+        with open(f"{folder_name}/weighing_examples.json", 'w') as f:
+            json.dump(weighing_examples, f)
