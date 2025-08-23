@@ -532,7 +532,7 @@ with st.form("evaluation_form"):
              is to decide which of the 2 arguments is clearer, and
              more persuasive.""")
 
-    st.header("Q4: Comparing Arguments Produced by Different Models")
+    st.header("Q4: Comparing Arguments 1")
 
     st.write(f'NOTE: The following claim is {"true" if arg_type_for_model_comparison == "supporting" else "false"}:')
 
@@ -560,7 +560,7 @@ with st.form("evaluation_form"):
 
     arg_type_for_setting_comparison = "supporting" if arg_type_for_model_comparison == "attacking" else "attacking"
 
-    st.header("Q5: Comparing Arguments Produced by Different ArgLLM Configurations")
+    st.header("Q5: Comparing Arguments 2")
 
     st.write(f'NOTE: The following claim is {"true" if arg_type_for_setting_comparison == "supporting" else "false"}:')
 
