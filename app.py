@@ -368,6 +368,9 @@ experiment_dict = {
 with st.form("evaluation_form"):
     st.write("""
         Thank you for taking the time to complete this questionnaire!
+
+        If you have any questions about the questionnaire, don't hesitate to
+        contact Charlie Lindsay via email: cbl20@ic.ac.uk
     """)
 
     st.title("Personal Questions")
@@ -404,7 +407,7 @@ with st.form("evaluation_form"):
         “This **argument** is valid, i.e. the **premises** entail the
         **conclusion**.”
 
-        The **premises** and **conclusion** in the argument are the following:
+        The **premises** and **conclusion** in the **argument** are the following:
         - **Premises**: A set of statute articles.
         - **Conclusion**: A proposed legal conclusion.
 
@@ -416,8 +419,9 @@ with st.form("evaluation_form"):
         You will be asked **five questions**, each based on a **different
         claim** and the corresponding **supporting and/or attacking
         arguments**:
-        - **Q1 and Q2** focus on assessing the quality of the
-        supporting and attacking arguments respectively.
+        - **Q1 and Q2** focus on assessing whether the arguments produced
+        use information solely from the claim and whether the arguments are
+        sound.
         - **Q3** focusses on assessing the relative strength of an
         attacking argument in comparison with a supporting argument.
         - **Q4 and Q5** focus on comparing 2 arguments that take the
@@ -476,7 +480,7 @@ with st.form("evaluation_form"):
 
     st.header("Q1: Supporting Argument Question")
 
-    st.write("""NOTE: The following claim is true.""")
+    st.write("""NOTE: The following claim is true:""")
 
     supporting_argument_responses = render_argument_section(
         example=supporting_example,
@@ -488,7 +492,7 @@ with st.form("evaluation_form"):
 
     st.header("Q2: Attacking Argument Question")
 
-    st.write("""NOTE: The following claim is false.""")
+    st.write("""NOTE: The following claim is false:""")
 
     attacking_argument_responses = render_argument_section(
         example=attacking_example,
@@ -501,9 +505,9 @@ with st.form("evaluation_form"):
     st.header("Q3: Argument Weighing Question")
 
     st.write("""This question shows a claim, and the corresponding arguments
-             for and against the claim. The truth of the claim is not given.
-             Your task is to decide which argument is more persuasive and why
-             and by how much.""")
+             for and against the claim. Whether or not the claim is true is
+             not provided. Your task is to decide which argument is more
+             persuasive and why and by how much.""")
 
     argument_weighing_results = render_argument_weighing_section()
 
@@ -530,7 +534,7 @@ with st.form("evaluation_form"):
 
     st.header("Q4: Comparing Arguments Produced by Different Models")
 
-    st.write(f'NOTE: The following claim is {"true" if arg_type_for_model_comparison == "supporting" else "false"}.')
+    st.write(f'NOTE: The following claim is {"true" if arg_type_for_model_comparison == "supporting" else "false"}:')
 
     model_comparison_results = render_comparison_of_arguments_section(
         comparison_type='model',
@@ -558,7 +562,7 @@ with st.form("evaluation_form"):
 
     st.header("Q5: Comparing Arguments Produced by Different ArgLLM Configurations")
 
-    st.write(f'NOTE: The following claim is {"true" if arg_type_for_setting_comparison == "supporting" else "false"}.')
+    st.write(f'NOTE: The following claim is {"true" if arg_type_for_setting_comparison == "supporting" else "false"}:')
 
     settings_comparison_results = render_comparison_of_arguments_section(
         comparison_type='arguments_reasoning',
