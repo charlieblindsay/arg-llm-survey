@@ -8,6 +8,11 @@ google_sheets_writer = GoogleSheetsWriter(
     spreadsheet_id="1x2yeFBQVQw8_mO6trYiT2qL3gNNXrfhFvJeshi6_Hzs"
 )
 
+# TODO: Make it clear in the questionnaire that when only attacking arguments
+# or only supporting arguments are presented, the claim is valid!
+# You are merely checking to see whether the arguments provided
+# provide the correct reasons why the claim is valid
+
 
 def render_argument_section(example, argument_type, likert_options):
     key_prefix = argument_type.lower()
@@ -15,8 +20,6 @@ def render_argument_section(example, argument_type, likert_options):
     opposite_verb = 'attack' if key_prefix == 'supporting' else 'support'
     display_type = argument_type.capitalize()
     name_of_argument = f'Argument {display_type} Claim'
-
-    st.header(f"{display_type} Argument Question")
 
     st.markdown(
         '<p style="color: orange; font-size: 20px; font-weight: bold;">Claim</p>',
@@ -51,7 +54,7 @@ def render_argument_section(example, argument_type, likert_options):
     )
 
     responses['facts_outside_claim_details'] = st.text_area(
-        "If 'No', provide the premises using facts not in the claim:",
+        "If 'No', provide the premises that do not use facts in the claim:",
         key=f"{key_prefix}_facts_outside_claim_details"
     )
 
@@ -96,9 +99,6 @@ def render_argument_section(example, argument_type, likert_options):
 
 
 def render_argument_weighing_section():
-    # Weighing Section
-    st.header("Argument Weighing Question")
-
     # Orange claim subheader and text
     st.markdown(
         '<p style="color: orange; font-size: 20px; font-weight: bold;">Claim</p>',
@@ -153,8 +153,8 @@ def render_argument_weighing_section():
     )
 
     which_argument = st.radio(
-        """Compare the attacking and supporting arguments. Which is more
-        persuasive?""",
+        """Compare the 'Argument Supporting Claim' and 'Argument Attacking
+        Claim'. Which is more persuasive?""",
         [
             "Argument Attacking Claim",
             "Argument Supporting Claim",
@@ -164,7 +164,8 @@ def render_argument_weighing_section():
     )
 
     weighing_explanation = st.text_area(
-        """Explain why this argument is stronger than the other.
+        """If you said that one argument was more persuasive than the other,
+        explain why this argument is more persuasive than the other.
         Please use details from both arguments.""",
         key="weighing_explanation"
     )
@@ -191,7 +192,6 @@ def render_argument_weighing_section():
 
 
 def render_comparison_of_arguments_section(
-        argument_comparison_question_number,
         comparison_type,
         arg_type,
         primary_attacking_arguments,
@@ -221,8 +221,6 @@ def render_comparison_of_arguments_section(
     claim = primary_argument["claim"]
     primary_argument_text = primary_argument["argument"]
     secondary_argument_text = secondary_argument["argument"]
-
-    st.header(f"Argument Comparison Question {argument_comparison_question_number}")
 
     st.markdown(
         '<p style="color: orange; font-size: 20px; font-weight: bold;">Claim</p>',
@@ -369,7 +367,7 @@ experiment_dict = {
 
 with st.form("evaluation_form"):
     st.write("""
-        Thank you for taking the time to participate in this questionnaire!
+        Thank you for taking the time to complete this questionnaire!
     """)
 
     st.title("Personal Questions")
@@ -393,15 +391,20 @@ with st.form("evaluation_form"):
 
     st.write(
         """
-        This questionnaire is part of an MSc individual project applying argumentation frameworks to Task 4 of the [COLIEE competition](https://coliee.org/overview).
-        Task 4 involves using relevant statute articles to determine whether a specific legal conclusion (taken from the Japanese Bar exam) is true or false.
+        This questionnaire is part of an MSc individual project applying
+        argumentation frameworks to Task 4 of the
+        [COLIEE competition](https://coliee.org/overview).
+        Task 4 involves using relevant statute articles to determine whether a
+        specific legal conclusion is true or false.
 
-        In this project, we frame the task as a **claim verification problem**. For each example:
+        In this project, we frame the task as a **claim verification problem**.
+        For each example:
 
         The **claim** being evaluated is:
-        **“This argument is valid, i.e. the premises entail the conclusion.”**
+        “This **argument** is valid, i.e. the **premises** entail the
+        **conclusion**.”
 
-        The premises and conclusion in the argument are the following:.
+        The **premises** and **conclusion** in the argument are the following:
         - **Premises**: A set of statute articles.
         - **Conclusion**: A proposed legal conclusion.
 
@@ -410,19 +413,27 @@ with st.form("evaluation_form"):
         - A **supporting argument** (that defends the claim).
         - An **attacking argument** (that challenges the claim).
 
-        You will be asked **three questions**, each based on a **different
-        claim** and corresponding LLM-generated supporting and attacking
+        You will be asked **five questions**, each based on a **different
+        claim** and the corresponding **supporting and/or attacking
+        arguments**:
+        - **Q1 and Q2** focus on assessing the quality of the
+        supporting and attacking arguments respectively.
+        - **Q3** focusses on assessing the relative strength of an
+        attacking argument in comparison with a supporting argument.
+        - **Q4 and Q5** focus on comparing 2 arguments that take the
+        same side, i.e. are either both attacking arguments or both supporting
         arguments.
 
-        The first 2 questions focus on assessing the quality of the supporting
-        and attacking arguments respectively.
-        The third question focusses on assessing the relative strength of an
-        attacking argument in comparison with a supporting argument. All 3
-        questions include the claim and arguments produced.
+        All 5 questions include the claim and arguments produced. All questions
+        **other than Q3** will state whether the claim is true or false.
 
-        Your responses will be very helpful as they will provide a qualitative
-        assessment of the arguments produced by the LLM and the means by which
-        the relative strength of arguments are assessed.
+        Your responses will help to provide qualitative assessments of:
+        1. the LLM-generated arguments (Q1, Q2)
+        2. the means of assessing the strength of arguments (Q3)
+        3. whether different LLMs or different ArgLLM configurations
+        improve argument quality (Q4, Q5)
+
+        Thank you!
         """
         )
 
@@ -447,8 +458,6 @@ with st.form("evaluation_form"):
     attacking_example = random.choice(attacking_arguments)
     weighing_example = random.choice(weighing_examples)
 
-    st.title("Argument Validity Questions")
-
     likert_options = [
         'Strongly Disagree',
         'Disagree',
@@ -456,6 +465,18 @@ with st.form("evaluation_form"):
         'Agree',
         'Strongly Agree'
     ]
+
+    st.title("Argument Soundness Questions")
+
+    st.write("""Q1 and Q2 show a claim and one argument that takes the
+             correct side, i.e. the argument supports the claim when
+             the claim is true and attacks the claim when the claim is false.
+             Your job is to decide whether the argument uses facts from the
+             claim and whether the argument is sound.""")
+
+    st.header("Q1: Supporting Argument Question")
+
+    st.write("""NOTE: The following claim is true.""")
 
     supporting_argument_responses = render_argument_section(
         example=supporting_example,
@@ -465,6 +486,10 @@ with st.form("evaluation_form"):
 
     st.divider()
 
+    st.header("Q2: Attacking Argument Question")
+
+    st.write("""NOTE: The following claim is false.""")
+
     attacking_argument_responses = render_argument_section(
         example=attacking_example,
         argument_type="attacking",
@@ -472,6 +497,13 @@ with st.form("evaluation_form"):
     )
 
     st.divider()
+
+    st.header("Q3: Argument Weighing Question")
+
+    st.write("""This question shows a claim, and the corresponding arguments
+             for and against the claim. The truth of the claim is not given.
+             Your task is to decide which argument is more persuasive and why
+             and by how much.""")
 
     argument_weighing_results = render_argument_weighing_section()
 
@@ -485,8 +517,22 @@ with st.form("evaluation_form"):
 
     arg_type_for_model_comparison = random.choice(["supporting", "attacking"])
 
+    st.title("Argument Comparison Section")
+
+    st.write("""Q4 and Q5 show a claim, and then 2 arguments that take
+             the same side, i.e. both attacking or both supporting the
+             argument. Similar to Q1 and Q2, the arguments take the correct
+             side, i.e. when the claim is true, the arguments will be
+             supporting the claim, and when the claim is false, the arguments
+             will be attacking the claim. For each question, your job
+             is to decide which of the 2 arguments is clearer, and
+             more persuasive.""")
+
+    st.header("Q4: Comparing Arguments Produced by Different Models")
+
+    st.write(f'NOTE: The following claim is {"true" if arg_type_for_model_comparison == "supporting" else "false"}.')
+
     model_comparison_results = render_comparison_of_arguments_section(
-        argument_comparison_question_number=1,
         comparison_type='model',
         arg_type=arg_type_for_model_comparison,
         primary_attacking_arguments=attacking_arguments,
@@ -510,8 +556,11 @@ with st.form("evaluation_form"):
 
     arg_type_for_setting_comparison = "supporting" if arg_type_for_model_comparison == "attacking" else "attacking"
 
+    st.header("Q5: Comparing Arguments Produced by Different ArgLLM Configurations")
+
+    st.write(f'NOTE: The following claim is {"true" if arg_type_for_setting_comparison == "supporting" else "false"}.')
+
     settings_comparison_results = render_comparison_of_arguments_section(
-        argument_comparison_question_number=2,
         comparison_type='arguments_reasoning',
         arg_type=arg_type_for_setting_comparison,
         primary_attacking_arguments=attacking_arguments,
@@ -540,10 +589,12 @@ with st.form("evaluation_form"):
         google_sheets_writer.write_to_sheets(
             sheet_name="SupArg Eval",
             new_line_data=[
-                main_experiment_id,
                 st.session_state.personal_info["name"],
                 st.session_state.personal_info["job_title"],
                 st.session_state.personal_info["studying"],
+                main_experiment_id,
+                main_model,
+                main_setting,
                 supporting_argument_responses["correct_dialectical_relation"],
                 supporting_argument_responses["logically_valid"],
                 supporting_argument_responses.get("logically_invalid_details", ""),
@@ -567,10 +618,12 @@ with st.form("evaluation_form"):
         google_sheets_writer.write_to_sheets(
             sheet_name="AttArg Eval",
             new_line_data=[
-                main_experiment_id,
                 st.session_state.personal_info["name"],
                 st.session_state.personal_info["job_title"],
                 st.session_state.personal_info["studying"],
+                main_experiment_id,
+                main_model,
+                main_setting,
                 attacking_argument_responses["correct_dialectical_relation"],
                 attacking_argument_responses["logically_valid"],
                 attacking_argument_responses.get("logically_invalid_details", ""),
@@ -594,10 +647,12 @@ with st.form("evaluation_form"):
         google_sheets_writer.write_to_sheets(
             sheet_name="Arg Weigh Eval",
             new_line_data=[
-                main_experiment_id,
                 st.session_state.personal_info["name"],
                 st.session_state.personal_info["job_title"],
                 st.session_state.personal_info["studying"],
+                main_experiment_id,
+                main_model,
+                main_setting,
                 argument_weighing_results["supporting_argument_supports"],
                 argument_weighing_results["attacking_argument_attacks"],
                 argument_weighing_results["which_argument"],
@@ -625,11 +680,11 @@ with st.form("evaluation_form"):
                 st.session_state.personal_info["studying"],
                 model_comparison_results["primary_experiment_id"],
                 model_comparison_results["secondary_experiment_id"],
-                model_comparison_results["arg_type"],
                 model_comparison_results["primary_model"],
                 model_comparison_results["secondary_model"],
                 model_comparison_results["primary_settings"],
                 model_comparison_results["secondary_settings"],
+                model_comparison_results["arg_type"],
                 model_comparison_results["primary_argument_has_correct_direction"],
                 model_comparison_results["secondary_argument_has_correct_direction"],
                 model_comparison_results["clarity_of_argument_comparison"],
@@ -661,11 +716,11 @@ with st.form("evaluation_form"):
                 st.session_state.personal_info["studying"],
                 settings_comparison_results["primary_experiment_id"],
                 settings_comparison_results["secondary_experiment_id"],
-                settings_comparison_results["arg_type"],
                 settings_comparison_results["primary_model"],
                 settings_comparison_results["secondary_model"],
                 settings_comparison_results["primary_settings"],
                 settings_comparison_results["secondary_settings"],
+                settings_comparison_results["arg_type"],
                 settings_comparison_results["primary_argument_has_correct_direction"],
                 settings_comparison_results["secondary_argument_has_correct_direction"],
                 settings_comparison_results["clarity_of_argument_comparison"],
@@ -696,7 +751,7 @@ with st.form("evaluation_form"):
                 Please fill out your answers!"""
             )
             st.session_state.rerun += 1
-            st.experimental_rerun()
+            st.rerun()
         else:
             st.success("""Thank you! Your answers have been recorded.
                     Your time is greatly appreciated!""")
