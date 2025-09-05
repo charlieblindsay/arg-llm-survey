@@ -28,7 +28,7 @@ def render_argument_section(example, argument_type, likert_options):
 
     responses = {}
 
-    responses['correct_dialectical_relation'] = st.multiselect(
+    responses['correct_dialectical_relation'] = st.radio(
         f"""Do the premises in the '{name_of_argument}' intend to {verb} the claim
         rather than {opposite_verb} it?
         For now, ignore whether or not the '{name_of_argument}' is sound.""",
@@ -36,7 +36,7 @@ def render_argument_section(example, argument_type, likert_options):
         key=f"{key_prefix}_correct_dialectical_relation"
     )
 
-    responses['facts_within_claim'] = st.multiselect(
+    responses['facts_within_claim'] = st.radio(
         f"""Do all premises in the '{name_of_argument}' use facts only from the
         claim?""",
         options=['Yes', 'No'],
@@ -48,7 +48,7 @@ def render_argument_section(example, argument_type, likert_options):
         key=f"{key_prefix}_facts_outside_claim_details"
     )
 
-    responses['relevant_premises'] = st.multiselect(
+    responses['relevant_premises'] = st.radio(
         f"""Are all premises in the '{name_of_argument}' relevant to the
         conclusion in the claim?""",
         options=['Yes', 'No'],
@@ -60,7 +60,7 @@ def render_argument_section(example, argument_type, likert_options):
         key=f"{key_prefix}_irrelevant_premises_details"
     )
 
-    responses['logically_valid'] = st.multiselect(
+    responses['logically_valid'] = st.radio(
         f"Are any of the premises in the '{name_of_argument}' logically invalid?",
         options=['Yes', 'No'],
         key=f"{key_prefix}_logically_valid"
@@ -72,113 +72,20 @@ def render_argument_section(example, argument_type, likert_options):
         key=f"{key_prefix}_logically_invalid_details"
     )
 
-    responses['complete_premises'] = st.multiselect(
+    responses['complete_premises'] = st.radio(
         f"""Does '{name_of_argument}' include all premises needed to make
         it a sound argument?""",
         options=['Yes', 'No'],
         key=f"{key_prefix}_complete_premises"
     )
 
-    responses['uses_specific_claim_information'] = st.multiselect(
+    responses['uses_specific_claim_information'] = st.radio(
         f"Does '{name_of_argument}' use SPECIFIC information from the claim?",
         options=likert_options,
         key=f"{key_prefix}_uses_specific_claim_information"
     )
 
     return responses
-
-
-def render_argument_weighing_section(weighing_example):
-    # Orange claim subheader and text
-    st.markdown(
-        '<p style="color: orange; font-size: 20px; font-weight: bold;">Claim</p>',
-        unsafe_allow_html=True
-    )
-    claim_html = html.escape(weighing_example["claim"]).replace('\n', '<br>')
-    st.markdown(
-        f'<p style="color: orange;">{claim_html}</p>',
-        unsafe_allow_html=True
-    )
-
-    # Green supporting argument subheader and text
-    st.markdown(
-        '<p style="color: green; font-size: 20px; font-weight: bold;">Argument Supporting Claim</p>',
-        unsafe_allow_html=True
-    )
-    supporting_html = html.escape(
-        weighing_example["supporting_argument"]
-    ).replace('\n', '<br>')
-    st.markdown(
-        f'<p style="color: green;">{supporting_html}</p>',
-        unsafe_allow_html=True
-    )
-
-    # Red attacking argument subheader and text
-    st.markdown(
-        '<p style="color: red; font-size: 20px; font-weight: bold;">Argument Attacking Claim</p>',
-        unsafe_allow_html=True
-    )
-    attacking_html = html.escape(
-        weighing_example["attacking_argument"]
-    ).replace('\n', '<br>')
-    st.markdown(
-        f'<p style="color: red;">{attacking_html}</p>',
-        unsafe_allow_html=True
-    )
-
-    supporting_argument_supports = st.multiselect(
-        """Do the premises in the 'Argument Supporting Claim' intend to
-        support the claim?
-        For now, ignore whether or not the argument is sound.""",
-        options=['Yes', 'No'],
-        key="weighing_supporting_argument_supports"
-    )
-
-    attacking_argument_attacks = st.multiselect(
-        """Do the premises in the 'Argument Attacking Claim' intend to
-        attack the claim?
-        For now, ignore whether or not the argument is sound.""",
-        options=['Yes', 'No'],
-        key="weighing_attacking_argument_attacks"
-    )
-
-    which_argument = st.multiselect(
-        """Compare the 'Argument Supporting Claim' and 'Argument Attacking
-        Claim'. Which is more persuasive?""",
-        [
-            "Argument Attacking Claim",
-            "Argument Supporting Claim",
-            "Equally strong"
-        ],
-        key="weighing_which_argument"
-    )
-
-    weighing_explanation = st.text_area(
-        """If you said that one argument was more persuasive than the other,
-        explain why this argument is more persuasive than the other.
-        Please use details from both arguments.""",
-        key="weighing_explanation"
-    )
-
-    difference_in_strengths = st.multiselect(
-        "How much stronger is this argument than the other?",
-        options=[
-            'Not stronger',
-            'Slightly stronger',
-            'Moderately stronger',
-            'Much stronger',
-            'Extremely stronger'
-        ],
-        key="weighing_difference_in_strengths"
-    )
-
-    return {
-        'supporting_argument_supports': supporting_argument_supports,
-        'attacking_argument_attacks': attacking_argument_attacks,
-        'which_argument': which_argument,
-        'weighing_explanation': weighing_explanation,
-        'difference_in_strengths': difference_in_strengths
-    }
 
 
 def render_comparison_of_arguments_section(
@@ -250,7 +157,7 @@ def render_comparison_of_arguments_section(
 
     verb = 'support' if arg_type == 'supporting' else 'attack'
 
-    primary_argument_has_correct_direction = st.multiselect(
+    primary_argument_has_correct_direction = st.radio(
         f"""Do the premises in the 'Argument {arg_type.capitalize()} Claim #1'
         intend to {verb} the claim?
         For now, ignore whether or not the argument is sound.""",
@@ -258,7 +165,7 @@ def render_comparison_of_arguments_section(
         key=f"{comparison_type}_comparison__direction_of_primary_arg"
     )
 
-    secondary_argument_has_correct_direction = st.multiselect(
+    secondary_argument_has_correct_direction = st.radio(
         f"""Do the premises in the 'Argument {arg_type.capitalize()} Claim #2'
         intend to {verb} the claim?
         For now, ignore whether or not the argument is sound.""",
@@ -266,7 +173,7 @@ def render_comparison_of_arguments_section(
         key=f"{comparison_type}_comparison__direction_of_secondary_arg"
     )
 
-    clarity_of_argument_comparison = st.multiselect(
+    clarity_of_argument_comparison = st.radio(
         "Which argument is clearer and easier to understand?",
         options=[f"Argument {arg_type.capitalize()} Claim #1",
                     f"Argument {arg_type.capitalize()} Claim #2",
@@ -274,14 +181,14 @@ def render_comparison_of_arguments_section(
         key=f"{comparison_type}_comparison__clarity_of_argument"
     )
 
-    clarity_of_argument_comparison_score = st.multiselect(
+    clarity_of_argument_comparison_score = st.radio(
         """If you said that an argument is easier to understand, how much
-        easier is it to understand? is this argument you said was clearer?""",
+        easier is it to understand?""",
         options=["Slightly clearer", "Moderately clearer", "Much clearer"],
         key=f"{comparison_type}_comparison__clarity_of_argument_comparison_score"
     )
 
-    persuasiveness_comparison = st.multiselect(
+    persuasiveness_comparison = st.radio(
         "Which argument is more persuasive overall?",
         options=[f"Argument {arg_type.capitalize()} Claim #1",
                  f"Argument {arg_type.capitalize()} Claim #2",
@@ -296,7 +203,7 @@ def render_comparison_of_arguments_section(
         key=f"{comparison_type}_comparison__persuasiveness_comments"
     )
 
-    persuasiveness_comparison_score = st.multiselect(
+    persuasiveness_comparison_score = st.radio(
         """If you said an argument was more persuasive, how much more
         persuasive is the argument you selected?""",
         options=[

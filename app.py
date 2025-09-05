@@ -1,9 +1,8 @@
 import streamlit as st
 import random
 import json
-from form_segments import (
+from parts_of_form import (
     render_argument_section,
-    render_argument_weighing_section,
     render_comparison_of_arguments_section
 )
 from google_sheets_writer import GoogleSheetsWriter
@@ -240,20 +239,7 @@ with st.form("evaluation_form"):
 
     st.divider()
 
-    st.header("Q5: Argument Weighing Question")
-
-    st.write("""This question shows a claim, and the corresponding arguments
-             for and against the claim. Whether or not the claim is true is
-             not provided. Your task is to decide which argument is more
-             persuasive and why and by how much.""")
-
-    argument_weighing_results = render_argument_weighing_section(
-        weighing_example=weighing_example
-    )
-
-    st.divider()
-
-    generate_new = st.multiselect(
+    generate_new = st.radio(
         """You can either submit your answers and generate new
                 questions or submit your answers and finish the questionnaire.
                 What would you like to do?""",
@@ -391,34 +377,6 @@ with st.form("evaluation_form"):
                 settings_comparison_results["secondary_argument_correct_prediction"],
                 settings_comparison_results["primary_argument_strength"],
                 settings_comparison_results["secondary_argument_strength"],
-            ]
-        )
-
-        google_sheets_writer.write_to_sheets(
-            sheet_name="Arg Weigh Eval",
-            new_line_data=[
-                st.session_state.personal_info["name"],
-                st.session_state.personal_info["job_title"],
-                st.session_state.personal_info["studying"],
-                main_experiment_id,
-                main_model,
-                main_setting,
-                argument_weighing_results["supporting_argument_supports"],
-                argument_weighing_results["attacking_argument_attacks"],
-                argument_weighing_results["which_argument"],
-                argument_weighing_results["difference_in_strengths"],
-                argument_weighing_results["weighing_explanation"],
-                weighing_example["claim"],
-                weighing_example["valid"],
-                weighing_example["claim_initial_weight"],
-                weighing_example["claim_strength"],
-                weighing_example["threshold"],
-                weighing_example["correct_prediction"],
-                weighing_example["supporting_argument"],
-                weighing_example["attacking_argument"],
-                weighing_example["supporting_strength"],
-                weighing_example["attacking_strength"],
-                weighing_example["difference_in_strength"]
             ]
         )
 
