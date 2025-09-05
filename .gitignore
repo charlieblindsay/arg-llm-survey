@@ -2,3 +2,11 @@ google_sheets_auth.json
 results/*
 venv/*
 __pycache__/*
+results_analysis.py
+average_influence.py
+bar_chart.py
+base_vs_estimated_analysis.py
+get_strength_of_other_argument.py
+processed_results.json
+qualitative_results_analysis.py
+qualitative_results.json
